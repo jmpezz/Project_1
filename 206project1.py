@@ -1,25 +1,21 @@
 import os
+import csv
 
 def getData(file):
-#Input: file name
-#Ouput: return a list of dictionary objects where 
-#the keys will come from the first row in the data.
 
-#Note: The column headings will not change from the 
-#test cases below, but the the data itself will 
-#change (contents and size) in the different test 
-#cases.
+	list_data = []
+	fname = open(file, 'r')
+	reader = csv.DictReader(fname)
 
-	#Your code here:
-	pass
+	for row in reader:
+		dict_data = dict(row)
+		list_data.append(dict_data)
+	return list_data
 
-#Sort based on key/column
+
 def mySort(data,col):
-#Input: list of dictionaries
-#Output: Return a string of the form firstName lastName
-
-	#Your code here:
-	pass
+	sort_lst = sorted(data, key = lambda x: x[col])
+	return sort_lst[0]['First'] + ' ' + sort_lst[0]['Last']
 
 #Create a histogram
 def classSizes(data):
