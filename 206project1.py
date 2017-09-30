@@ -2,7 +2,6 @@ import os
 import csv
 
 def getData(file):
-
 	list_data = []
 	fname = open(file, 'r')
 	reader = csv.DictReader(fname)
@@ -17,26 +16,41 @@ def mySort(data,col):
 	sort_lst = sorted(data, key = lambda x: x[col])
 	return sort_lst[0]['First'] + ' ' + sort_lst[0]['Last']
 
-#Create a histogram
+
 def classSizes(data):
-# Input: list of dictionaries
-# Output: Return a list of tuples ordered by
-# ClassName and Class size, e.g 
-# [('Senior', 26), ('Junior', 25), ('Freshman', 21), ('Sophomore', 18)]
+	SrCount = 0
+	JrCount = 0
+	SophCount = 0
+	FreshCount = 0
 
-	#Your code here:
-	pass
+	lst_class = []
+
+	for x in data:
+		if x['Class'] == 'Senior':
+			SrCount += 1
+		elif x['Class'] == 'Junior':
+			JrCount += 1
+		elif x['Class'] == 'Sophomore':
+			SophCount += 1
+		elif x['Class'] == 'Freshman':
+			FreshCount += 1
+	lst_class.append(('Senior', SrCount))
+	lst_class.append(('Junior', JrCount)) 
+	lst_class.append(('Sophomore', SophCount)) 
+	lst_class.append(('Freshman', FreshCount))
+
+	return sorted(lst_class, key = lambda x: x[1], reverse = True)
 
 
-
-# Find the most common day of the year to be born
 def findDay(a):
-# Input: list of dictionaries
-# Output: Return the day of month (1-31) that is the
-# most often seen in the DOB
-
-	#Your code here:
-	pass
+	birthday_dict = {}
+	for x in a:
+		day = x['DOB'].split('/')[1]
+		if day not in birthday_dict.keys():
+			birthday_dict[day] = 1
+		else:
+			birthday_dict[day] += 1
+	return int(sorted(birthday_dict, key = birthday_dict.get, reverse = True)[0])
 
 
 # Find the average age (rounded) of the Students
@@ -48,14 +62,15 @@ def findAge(a):
 	#Your code here:
 	pass
 
+
 #Similar to mySort, but instead of returning single
 #Student, all of the sorted data is saved to a csv file.
 def mySortPrint(a,col,fileName):
-#Input: list of dictionaries, key to sort by and output file name
-#Output: None
+	csv = open(fileName, 'w')
 
-	#Your code here:
-	pass
+	sort_list = sorted(a, key = lambda x: x[col])
+	for x in sort_list:
+
 
 
 
