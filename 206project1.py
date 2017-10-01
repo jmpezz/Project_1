@@ -1,5 +1,7 @@
 import os
+import filecmp
 import csv
+import datetime
 
 def getData(file):
 	list_data = []
@@ -18,28 +20,21 @@ def mySort(data,col):
 
 
 def classSizes(data):
-	SrCount = 0
-	JrCount = 0
-	SophCount = 0
-	FreshCount = 0
-
-	lst_class = []
-
+	Grade = {'Senior': 0, 'Junior': 0, 'Sophomore': 0, 'Freshman': 0}
 	for x in data:
 		if x['Class'] == 'Senior':
-			SrCount += 1
+			Grade['Senior'] += 1
 		elif x['Class'] == 'Junior':
-			JrCount += 1
+			Grade['Junior'] += 1
 		elif x['Class'] == 'Sophomore':
-			SophCount += 1
+			Grade['Sophomore'] += 1
 		elif x['Class'] == 'Freshman':
-			FreshCount += 1
-	lst_class.append(('Senior', SrCount))
-	lst_class.append(('Junior', JrCount)) 
-	lst_class.append(('Sophomore', SophCount)) 
-	lst_class.append(('Freshman', FreshCount))
-
-	return sorted(lst_class, key = lambda x: x[1], reverse = True)
+			Grade['Freshman'] += 1
+	sorted_grade = sorted(Grade, key = lambda x: Grade[x], reverse = True)
+	Grade_Total = []
+	for x in sorted_grade:
+		Grade_Total.append((x, Grade[x]))
+	return Grade_Total
 
 
 def findDay(a):
@@ -53,24 +48,31 @@ def findDay(a):
 	return int(sorted(birthday_dict, key = birthday_dict.get, reverse = True)[0])
 
 
-# Find the average age (rounded) of the Students
 def findAge(a):
-# Input: list of dictionaries
-# Output: Return the day of month (1-31) that is the
-# most often seen in the DOB
+	age = []
+	year_now = int(datetime.date.today().year)
+	month_now = int(datetime.date.today().month)
+	day_now = int(datetime.date.today().day)
+	for x in a[1:]:
+		birthmonth, birthday, birthyear = x['DOB'].split('/')
+		if ((day_now >= int(birthday)) and (month_now >= int(birthmonth))):
+			age.append(year_now - int(birthyear))
+		else:
+			age.append(year_now - int(birthyear) + 1)
+	return int((sum(age) / len(age)))
 
-	#Your code here:
-	pass
 
-
-#Similar to mySort, but instead of returning single
-#Student, all of the sorted data is saved to a csv file.
 def mySortPrint(a,col,fileName):
-	csv = open(fileName, 'w')
-
-	sort_list = sorted(a, key = lambda x: x[col])
-	for x in sort_list:
-
+	csv_file = open(fileName, 'w')
+	sort_lst = sorted(a, key = lambda x: x[col])
+	for x in sort_lst:
+		first = x['First']
+		last = x['Last']
+		email = x['Email']
+		row = (first + ',' + last + ',' + email)
+		csv_file.write(row + '\n')
+	csv_file.close()
+	return None 
 
 
 
@@ -96,7 +98,7 @@ def main():
 	print("Read in Test data and store as a list of dictionaries")
 	data = getData('P1DataA.csv')
 	data2 = getData('P1DataB.csv')
-	total += test(type(data),type([]),35)
+	total += test(type(data),type([]),40)
 	print()
 	print("First student sorted by First name:")
 	total += test(mySort(data,'First'),'Abbot Le',15)
